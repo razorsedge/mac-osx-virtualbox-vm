@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Mount the installer image
-hdiutil attach /Applications/Install\ OS\ X\ Yosemite.app/Contents/SharedSupport/InstallESD.dmg -noverify -nobrowse -mountpoint /Volumes/install_app
+hdiutil attach /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/SharedSupport/InstallESD.dmg -noverify -nobrowse -mountpoint /Volumes/install_app
 
 # Convert the boot image to a sparse bundle
-hdiutil convert /Volumes/install_app/BaseSystem.dmg -format UDSP -o /tmp/Yosemite
+hdiutil convert /Volumes/install_app/BaseSystem.dmg -format UDSP -o /tmp/elcap
 
 # Increase the sparse bundle capacity to accommodate the packages
-hdiutil resize -size 8g /tmp/Yosemite.sparseimage
+hdiutil resize -size 8g /tmp/elcap.sparseimage
 
 # Mount the sparse bundle for package addition
-hdiutil attach /tmp/Yosemite.sparseimage -noverify -nobrowse -mountpoint /Volumes/install_build
+hdiutil attach /tmp/elcap.sparseimage -noverify -nobrowse -mountpoint /Volumes/install_build
 
 # Remove Package link and replace with actual files
 rm /Volumes/install_build/System/Installation/Packages
@@ -27,13 +27,13 @@ hdiutil detach /Volumes/install_app
 hdiutil detach /Volumes/install_build
 
 # Resize the partition in the sparse bundle to remove any free space
-hdiutil resize -size `hdiutil resize -limits /tmp/Yosemite.sparseimage | tail -n 1 | awk '{ print $1 }'`b /tmp/Yosemite.sparseimage
+hdiutil resize -size `hdiutil resize -limits /tmp/elcap.sparseimage | tail -n 1 | awk '{ print $1 }'`b /tmp/elcap.sparseimage
 
 # Convert the sparse bundle to ISO/CD master
-hdiutil convert /tmp/Yosemite.sparseimage -format UDTO -o /tmp/Yosemite
+hdiutil convert /tmp/elcap.sparseimage -format UDTO -o /tmp/elcap
 
 # Remove the sparse bundle
-rm /tmp/Yosemite.sparseimage
+rm /tmp/elcap.sparseimage
 
 # Rename the ISO and move it to the desktop
-mv /tmp/Yosemite.cdr ~/Desktop/Yosemite.iso
+mv /tmp/elcap.cdr elcap.iso
